@@ -1,4 +1,4 @@
-from discrete_space import DiscreteSpace
+from .discrete_space import DiscreteSpace
 from typing import Tuple
 
 
@@ -21,7 +21,7 @@ class SimplifiedWumpusWorld:
         self.board = [
             ['0', '0', 'P', '0'],
             ['P', '0', '0', 'P'],
-            ['0', '0', '0', '0']
+            ['0', '0', '0', '0'],
             ['W', '0', 'P', 'G']
         ]
         self.agentX = 0
