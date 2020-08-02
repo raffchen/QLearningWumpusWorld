@@ -45,9 +45,8 @@ class WumpusWorld:
 
     @property
     def state(self) -> int:
-        # TODO: come up with a different method of determining state that takes into account
-        # stuff like direction, has_arrow, has_gold, etc.
-        return self.agent.Y * 4 + self.agent.X
+        return self.agent.Y * 4 + self.agent.X + \
+            (16 * int(f"{bin(self.agent.direction)}{int(self.agent.has_arrow)}{int(self.agent.has_gold)}", 2))
 
     def step(self, action: int) -> Tuple[int, int, bool]:
         """
@@ -107,4 +106,5 @@ class WumpusWorld:
                 return (self.state, -1, False)
 
     def reset(self) -> int:
-        return 0  # TODO: allow resetting to different points in the world
+        # TODO: allow resetting to different points in the world
+        return 0
