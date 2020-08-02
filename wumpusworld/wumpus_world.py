@@ -107,4 +107,11 @@ class WumpusWorld:
 
     def reset(self) -> int:
         # TODO: allow resetting to different points in the world
+        self.agent = self.Agent()
+        self.board = [
+            ['0', '0', 'P', '0'],
+            ['P', '0', '0', 'P'],
+            ['0', '0', '0', '0'],
+            ['W', '0', 'P', 'G']
+        ]
         return 0
