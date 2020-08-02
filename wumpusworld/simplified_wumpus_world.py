@@ -28,8 +28,8 @@ class SimplifiedWumpusWorld:
         self.agentX = 0
         self.agentY = 0
 
-        self.num_actions = 4
-        self.num_spaces = 16
+        self.num_actions = 4    # up, down, left, right
+        self.num_spaces = 16    # one for each tile
         self.action_space = DiscreteSpace(self.num_actions)
         self.observation_space = DiscreteSpace(self.num_spaces)
 
