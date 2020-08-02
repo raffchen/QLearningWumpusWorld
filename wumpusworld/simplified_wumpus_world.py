@@ -1,5 +1,6 @@
-from .discrete_space import DiscreteSpace
 from typing import Tuple
+
+from .discrete_space import DiscreteSpace
 
 
 class SimplifiedWumpusWorld:
