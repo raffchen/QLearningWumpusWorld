@@ -37,9 +37,10 @@ class WumpusWorld:
         self.agent = self.Agent()
         self.wumpusX = 0
         self.wumpusY = 3
+        self.wumpus_dead = False
 
         self.num_actions = 6  # forward, turn left, turn right, grab, shoot, climb
-        self.num_states = 16  # one for each tile
+        self.num_states = 256  # one for each combination of tile, direction, has arrow, has gold
         self.action_space = DiscreteSpace(self.num_actions)
         self.observation_space = DiscreteSpace(self.num_states)
 
@@ -61,14 +62,18 @@ class WumpusWorld:
             elif self.agent.direction == 1:  # down (towards y = 0)
                 self.agent.Y = max(0, self.agent.Y - 1)
             elif self.agent.direction == 2:  # left
-                self.agent.X = max(0, self.agent.X + 1)
+                self.agent.X = max(0, self.agent.X - 1)
             else:                            # up
                 self.agent.Y = min(3, self.agent.Y + 1)
 
-            if self.board[self.agent.Y][self.agent.X] in ('P', 'W'):
-                return (self.state, -1000, True)
-            else:
-                return (self.state, -1, False)
+            try:
+                if self.board[self.agent.Y][self.agent.X] in ('P', 'W'):
+                    return (self.state, -1000, True)
+                else:
+                    return (self.state, -1, False)
+            except IndexError as e:
+                print(self.agent.X, self.agent.Y)
+                raise e
         elif action == 1:  # turn left
             self.agent.direction = (self.agent.direction - 1) % 4
             return (self.state, -1, False)
@@ -87,15 +92,19 @@ class WumpusWorld:
                 if self.agent.direction == 0:    # right
                     if self.agent.X < self.wumpusX and self.agent.Y == self.wumpusY:
                         self.board[self.wumpusY][self.wumpusX] = '0'
+                        self.wumpus_dead = True
                 elif self.agent.direction == 1:  # down (towards y = 0)
                     if self.agent.X == self.wumpusX and self.agent.Y > self.wumpusY:
                         self.board[self.wumpusY][self.wumpusX] = '0'
+                        self.wumpus_dead = True
                 elif self.agent.direction == 2:  # left
                     if self.agent.X > self.wumpusX and self.agent.Y == self.wumpusY:
                         self.board[self.wumpusY][self.wumpusX] = '0'
+                        self.wumpus_dead = True
                 elif self.agent.direction == 3:  # up
                     if self.agent.X == self.wumpusX and self.agent.Y < self.wumpusY:
                         self.board[self.wumpusY][self.wumpusX] = '0'
+                        self.wumpus_dead = True
                 return (self.state, -10, False)
             else:
                 return (self.state, -1, False)
