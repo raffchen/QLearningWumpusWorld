@@ -37,7 +37,6 @@ class WumpusWorld:
         self.agent = self.Agent()
         self.wumpusX = 0
         self.wumpusY = 3
-        self.wumpus_dead = False
 
         self.num_actions = 6  # forward, turn left, turn right, grab, shoot, climb
         self.num_states = 256  # one for each combination of tile, direction, has arrow, has gold
@@ -92,19 +91,15 @@ class WumpusWorld:
                 if self.agent.direction == 0:    # right
                     if self.agent.X < self.wumpusX and self.agent.Y == self.wumpusY:
                         self.board[self.wumpusY][self.wumpusX] = '0'
-                        self.wumpus_dead = True
                 elif self.agent.direction == 1:  # down (towards y = 0)
                     if self.agent.X == self.wumpusX and self.agent.Y > self.wumpusY:
                         self.board[self.wumpusY][self.wumpusX] = '0'
-                        self.wumpus_dead = True
                 elif self.agent.direction == 2:  # left
                     if self.agent.X > self.wumpusX and self.agent.Y == self.wumpusY:
                         self.board[self.wumpusY][self.wumpusX] = '0'
-                        self.wumpus_dead = True
                 elif self.agent.direction == 3:  # up
                     if self.agent.X == self.wumpusX and self.agent.Y < self.wumpusY:
                         self.board[self.wumpusY][self.wumpusX] = '0'
-                        self.wumpus_dead = True
                 return (self.state, -10, False)
             else:
                 return (self.state, -1, False)
