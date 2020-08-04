@@ -8,9 +8,9 @@ class SimplifiedWumpusWorld:
     Worlds are described by a grid like the following
 
         00P0
-        P00P
-        0000
-        W0PG
+        000P
+        PW00
+        00PG
 
     The starting point is always at (0, 0)
     0: empty tile
@@ -21,9 +21,9 @@ class SimplifiedWumpusWorld:
     def __init__(self):
         self.board = [
             ['0', '0', 'P', '0'],
-            ['P', '0', '0', 'P'],
-            ['0', '0', '0', '0'],
-            ['W', '0', 'P', 'G']
+            ['0', '0', '0', 'P'],
+            ['P', 'W', '0', '0'],
+            ['0', '0', 'P', 'G']
         ]
         self.agentX = 0
         self.agentY = 0
