@@ -42,7 +42,7 @@ class SimplifiedWumpusWorld:
         Returns a tuple in the format of (new state, reward, done)
         given an int, action, where 0 <= action < 4
         """
-        assert 0 <= action < 4, "Action must be an integer between 0 and 3"
+        assert 0 <= action < self.num_actions, "Action must be an integer between 0 and 3"
 
         if action == 0:
             self.agentY = min(3, self.agentY + 1)
