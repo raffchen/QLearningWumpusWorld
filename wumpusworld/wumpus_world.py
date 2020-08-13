@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Sequence, Tuple
 
 from .discrete_space import DiscreteSpace
 
@@ -27,16 +27,17 @@ class WumpusWorld:
             self.has_arrow = has_arrow
             self.has_gold = has_gold
 
-    def __init__(self):
+    def __init__(self, board: Sequence[Sequence[str]] = None):
         self.board = [
             ['0', '0', 'P', '0'],
             ['P', '0', '0', 'P'],
-            ['0', '0', '0', '0'],
-            ['W', '0', 'P', 'G']
-        ]
+            ['0', '0', '0', 'W'],
+            ['0', '0', 'P', 'G']
+        ] if board is None else board
+        self.reset = [i.copy for i in self.board]
         self.agent = self.Agent()
-        self.wumpusX = 0
-        self.wumpusY = 3
+        self.wumpusX = 3
+        self.wumpusY = 2
 
         self.num_actions = 6  # forward, turn left, turn right, grab, shoot, climb
         self.num_states = 256  # one for each combination of tile, direction, has arrow, has gold
@@ -112,10 +113,5 @@ class WumpusWorld:
     def reset(self) -> int:
         # TODO: allow resetting to different points in the world
         self.agent = self.Agent()
-        self.board = [
-            ['0', '0', 'P', '0'],
-            ['P', '0', '0', 'P'],
-            ['0', '0', '0', '0'],
-            ['W', '0', 'P', 'G']
-        ]
+        self.board = self.reset
         return 0
