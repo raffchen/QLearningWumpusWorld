@@ -9,8 +9,8 @@ class WumpusWorld:
 
         00P0
         P00P
-        0000
-        W0PG
+        000W
+        00PG
 
     The starting point is always at (0, 0)
     0: empty tile
@@ -27,17 +27,21 @@ class WumpusWorld:
             self.has_arrow = has_arrow
             self.has_gold = has_gold
 
-    def __init__(self, board: Sequence[Sequence[str]] = None):
-        self.board = [
-            ['0', '0', 'P', '0'],
-            ['P', '0', '0', 'P'],
-            ['0', '0', '0', 'W'],
-            ['0', '0', 'P', 'G']
-        ] if board is None else board
-        self.reset = [i.copy for i in self.board]
+    def __init__(self, custom_board: (Sequence[Sequence[str]], (int, int)) = None):
+        if custom_board:
+            self.board, (self.wumpusX, self.wumpusY) = custom_board
+        else:
+            self.board = (
+                ('0', '0', 'P', '0'),
+                ('P', '0', '0', 'P'),
+                ('0', '0', '0', 'W'),
+                ('0', '0', 'P', 'G')
+            )
+            self.wumpusX = 3
+            self.wumpusY = 2
         self.agent = self.Agent()
-        self.wumpusX = 3
-        self.wumpusY = 2
+
+        self.wumpus_killed = False
 
         self.num_actions = 6  # forward, turn left, turn right, grab, shoot, climb
         self.num_states = 256  # one for each combination of tile, direction, has arrow, has gold
@@ -48,6 +52,10 @@ class WumpusWorld:
     def state(self) -> int:
         return self.agent.Y * 4 + self.agent.X + \
             (16 * int(f"{bin(self.agent.direction)}{int(self.agent.has_arrow)}{int(self.agent.has_gold)}", 2))
+
+    @property
+    def gold_taken(self) -> bool:
+        return self.agent.has_gold
 
     def step(self, action: int) -> Tuple[int, int, bool]:
         """
@@ -67,7 +75,8 @@ class WumpusWorld:
                 self.agent.Y = min(3, self.agent.Y + 1)
 
             try:
-                if self.board[self.agent.Y][self.agent.X] in ('P', 'W'):
+                if (self.board[self.agent.Y][self.agent.X] == 'P' or
+                   (self.board[self.agent.Y][self.agent.X] == 'W' and not self.wumpus_killed)):
                     return (self.state, -1000, True)
                 else:
                     return (self.state, -1, False)
@@ -83,7 +92,6 @@ class WumpusWorld:
         elif action == 3:  # grab
             if self.board[self.agent.Y][self.agent.X] == 'G':
                 self.agent.has_gold = True
-                self.board[self.agent.Y][self.agent.X] = '0'
             return (self.state, -1, False)
         elif action == 4:  # shoot
             if self.agent.has_arrow:
@@ -91,21 +99,21 @@ class WumpusWorld:
 
                 if self.agent.direction == 0:    # right
                     if self.agent.X < self.wumpusX and self.agent.Y == self.wumpusY:
-                        self.board[self.wumpusY][self.wumpusX] = '0'
+                        self.wumpus_killed = True
                 elif self.agent.direction == 1:  # down (towards y = 0)
                     if self.agent.X == self.wumpusX and self.agent.Y > self.wumpusY:
-                        self.board[self.wumpusY][self.wumpusX] = '0'
+                        self.wumpus_killed = True
                 elif self.agent.direction == 2:  # left
                     if self.agent.X > self.wumpusX and self.agent.Y == self.wumpusY:
-                        self.board[self.wumpusY][self.wumpusX] = '0'
+                        self.wumpus_killed = True
                 elif self.agent.direction == 3:  # up
                     if self.agent.X == self.wumpusX and self.agent.Y < self.wumpusY:
-                        self.board[self.wumpusY][self.wumpusX] = '0'
+                        self.wumpus_killed = True
                 return (self.state, -10, False)
             else:
                 return (self.state, -1, False)
         else:              # climb
-            if (self.agent.X, self.agent.Y) == (0, 0) and self.agent.has_gold:
+            if (self.agent.X, self.agent.Y) == (0, 0) and self.gold_taken:
                 return (self.state, 1000, True)
             else:
                 return (self.state, -1, False)
@@ -113,5 +121,5 @@ class WumpusWorld:
     def reset(self) -> int:
         # TODO: allow resetting to different points in the world
         self.agent = self.Agent()
-        self.board = self.reset
+        self.wumpus_killed = False
         return 0
