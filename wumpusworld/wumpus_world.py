@@ -28,6 +28,10 @@ class WumpusWorld:
             self.has_gold = has_gold
 
     def __init__(self, custom_board: (Sequence[Sequence[str]], (int, int)) = None):
+        """
+        the parameter custom_board is a tuple containing the custom world,
+        and a tuple containing the x, y coordinates of the wumpus in the custom world
+        """
         if custom_board:
             self.board, (self.wumpusX, self.wumpusY) = custom_board
         else:

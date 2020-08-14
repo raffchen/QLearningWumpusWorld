@@ -28,6 +28,10 @@ class WumpusWorldSensors:
             self.has_gold = has_gold
 
     def __init__(self, custom_board: (Sequence[Sequence[str]], (int, int)) = None):
+        """
+        the parameter custom_board is a tuple containing the custom world,
+        and a tuple containing the x, y coordinates of the wumpus in the custom world
+        """
         if custom_board:
             self.board, (self.wumpusX, self.wumpusY) = custom_board
         else:
@@ -50,7 +54,7 @@ class WumpusWorldSensors:
         self.send_stench = False
 
         self.num_actions = 6  # forward, turn left, turn right, grab, shoot, climb
-        self.num_states = 256  # one for each combination of tile, direction, has arrow, has gold
+        self.num_states = 32  # one for each combination of senses
         self.action_space = DiscreteSpace(self.num_actions)
         self.observation_space = DiscreteSpace(self.num_states)
 
@@ -61,7 +65,7 @@ class WumpusWorldSensors:
             new_y = y + self.agent.Y
 
             if 0 <= new_x < 4 and 0 <= new_y < 4:
-                if self.board[new_y][new_x] == 'W':
+                if self.board[new_y][new_x] == 'W' and not self.wumpus_killed:
                     self.send_stench = True
                 elif self.board[new_y][new_x] == 'P':
                     self.send_breeze = True
@@ -70,11 +74,11 @@ class WumpusWorldSensors:
             self.send_glitter = True
 
         senses = [
-            1 if self.send_stench else 0,
-            1 if self.send_breeze else 0,
-            1 if self.send_glitter else 0,
-            1 if self.send_bump else 0,
-            1 if self.send_scream else 0
+            '1' if self.send_stench else '0',
+            '1' if self.send_breeze else '0',
+            '1' if self.send_glitter else '0',
+            '1' if self.send_bump else '0',
+            '1' if self.send_scream else '0'
         ]
 
         self.send_stench = False
