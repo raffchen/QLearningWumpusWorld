@@ -1,5 +1,7 @@
 from typing import Sequence, Tuple
 
+import numpy as np
+
 from .discrete_space import DiscreteSpace
 
 
@@ -34,6 +36,7 @@ class WumpusWorldSensors:
         """
         if custom_board:
             self.board, (self.wumpusX, self.wumpusY) = custom_board
+            assert np.array(self.board).shape == (4, 4), "Your custom board must be 4x4"
         else:
             self.board = (
                 ('0', '0', 'P', '0'),
