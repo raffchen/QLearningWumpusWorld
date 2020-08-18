@@ -58,7 +58,7 @@ class WumpusWorld:
     @property
     def state(self) -> int:
         return self.agent.Y * 4 + self.agent.X + \
-            (16 * int(f"{bin(self.agent.direction)}{int(self.agent.has_arrow)}{int(self.agent.has_gold)}", 2))
+            (16 * int(f"{bin(self.agent.direction)}{1 - int(self.agent.has_arrow)}{int(self.agent.has_gold)}", 2))
 
     @property
     def gold_taken(self) -> bool:
@@ -125,8 +125,8 @@ class WumpusWorld:
             else:
                 return (self.state, -1, False)
 
-    def reset(self) -> int:
-        # TODO: allow resetting to different points in the world
-        self.agent = self.Agent()
+    def reset(self, *, agentX: int = 0, agentY: int = 0, direction: int = 0,
+              has_arrow: bool = True, has_gold: bool = False, wumpus_killed: bool = False) -> int:
+        self.agent = self.Agent(agentX, agentY, direction, has_arrow, has_gold)
         self.wumpus_killed = False
         return 0

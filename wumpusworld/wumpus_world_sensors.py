@@ -169,8 +169,8 @@ class WumpusWorldSensors:
             else:
                 return (self.state, -1, False)
 
-    def reset(self) -> int:
-        # TODO: allow resetting to different points in the world
-        self.agent = self.Agent()
+    def reset(self, *, agentX: int = 0, agentY: int = 0, direction: int = 0,
+              has_arrow: bool = True, has_gold: bool = False, wumpus_killed: bool = False) -> int:
+        self.agent = self.Agent(agentX, agentY, direction, has_arrow, has_gold)
         self.wumpus_killed = False
         return 0
